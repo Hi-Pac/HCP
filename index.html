@@ -315,7 +315,6 @@
 </div>
 <!-- محتويات الصفحات الأخرى -->
 <div class="page-content hidden" id="payments-content">
-
 <div class="flex justify-end mb-4">
 <button class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all" id="add-payment-btn">
             + إضافة سداد جديد
@@ -2358,7 +2357,6 @@
             return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
         }
     </script>
-
 <!-- Modal إضافة سداد جديد -->
 <div class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50" id="payment-modal">
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md">
@@ -2403,7 +2401,66 @@
 </form>
 </div>
 </div>
-</body>
+<script>
+// =====================
+// نموذج إضافة سداد جديد
+// =====================
+document.getElementById('add-payment-btn').addEventListener('click', () => {
+    document.getElementById('payment-modal').classList.remove('hidden');
+    loadPaymentCustomers();
+});
+
+// تحميل العملاء داخل القائمة المنسدلة في مودال السداد
+function loadPaymentCustomers() {
+    const select = document.getElementById('payment-customer');
+    select.innerHTML = '<option value="">اختر العميل</option>';
+    customers.forEach(customer => {
+        const option = document.createElement('option');
+        option.value = customer.id;
+        option.textContent = customer.name;
+        select.appendChild(option);
+    });
+}
+
+// عند حفظ السداد
+document.getElementById('payment-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const customerId = document.getElementById('payment-customer').value;
+    const customer = customers.find(c => c.id === customerId);
+    const customerName = customer ? customer.name : '';
+    const amount = parseFloat(document.getElementById('payment-amount').value);
+    const method = document.getElementById('payment-method').value;
+    const notes = document.getElementById('payment-notes').value;
+    const date = document.getElementById('payment-date').value;
+
+    if (!customerId || !amount || !method || !date) {
+        Swal.fire('يرجى ملء جميع الحقول المطلوبة');
+        return;
+    }
+
+    const paymentData = {
+        customerId,
+        customerName,
+        amount,
+        method,
+        notes,
+        date: new Date(date),
+        createdAt: firebase.firestore.Timestamp.now()
+    };
+
+    try {
+        await db.collection('payments').add(paymentData);
+        document.getElementById('payment-modal').classList.add('hidden');
+        document.getElementById('payment-form').reset();
+        Swal.fire('تمت إضافة السداد بنجاح', '', 'success');
+        loadPayments();
+    } catch (error) {
+        console.error('خطأ في حفظ السداد:', error);
+        Swal.fire('حدث خطأ أثناء إضافة السداد', '', 'error');
+    }
+});
+</script></body>
 </html>
 <script>
 // =====================
