@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+
+<html dir="rtl" lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شركة الدهانات | نظام إدارة المبيعات</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>شركة الدهانات | نظام إدارة المبيعات</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -33,12 +34,12 @@
             }
         });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
-    <style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
+<style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
         
         body {
@@ -52,632 +53,579 @@
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-dark-bg min-h-screen">
-    <div id="app">
-        <!-- صفحة تسجيل الدخول -->
-        <div id="login-page" class="flex items-center justify-center min-h-screen">
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-md">
-                <div class="text-center mb-8">
-                    <h1 class="text-3xl font-bold text-primary mb-2">نظام إدارة مبيعات الدهانات</h1>
-                    <p class="text-gray-600 dark:text-gray-300">يرجى تسجيل الدخول للوصول إلى النظام</p>
-                </div>
-                
-                <form id="login-form" class="space-y-6">
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">البريد الإلكتروني</label>
-                        <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                    </div>
-                    
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">كلمة المرور</label>
-                        <input type="password" id="password" name="password" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                    </div>
-                    
-                    <div>
-                        <button type="submit" class="w-full bg-primary text-white py-3 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all">
+<div id="app">
+<!-- صفحة تسجيل الدخول -->
+<div class="flex items-center justify-center min-h-screen" id="login-page">
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-md">
+<div class="text-center mb-8">
+<h1 class="text-3xl font-bold text-primary mb-2">نظام إدارة مبيعات الدهانات</h1>
+<p class="text-gray-600 dark:text-gray-300">يرجى تسجيل الدخول للوصول إلى النظام</p>
+</div>
+<form class="space-y-6" id="login-form">
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="email">البريد الإلكتروني</label>
+<input class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="email" name="email" required="" type="email"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="password">كلمة المرور</label>
+<input class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="password" name="password" required="" type="password"/>
+</div>
+<div>
+<button class="w-full bg-primary text-white py-3 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all" type="submit">
                             تسجيل الدخول
                         </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        
-        <!-- صفحة لوحة التحكم (سيتم إظهارها بعد تسجيل الدخول) -->
-        <div id="dashboard-page" class="hidden">
-            <div class="flex h-screen bg-gray-100 dark:bg-dark-bg">
-                <!-- القائمة الجانبية -->
-                <div id="sidebar" class="w-64 bg-white dark:bg-gray-800 shadow-lg">
-                    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-                        <h2 class="text-xl font-bold text-primary">شركة الدهانات</h2>
-                    </div>
-                    <nav class="mt-4">
-                        <ul>
-                            <li>
-                                <a href="#dashboard" class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 active-nav">
-                                    <span class="mr-2">📊</span>
-                                    <span>لوحة التحكم</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#products" class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    <span class="mr-2">🎨</span>
-                                    <span>المنتجات</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#customers" class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    <span class="mr-2">👥</span>
-                                    <span>العملاء</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#orders" class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    <span class="mr-2">📝</span>
-                                    <span>الطلبات</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#payments" class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    <span class="mr-2">💰</span>
-                                    <span>السداد</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#reports" class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    <span class="mr-2">📈</span>
-                                    <span>التقارير</span>
-                                </a>
-                            </li>
-                            <li id="admin-users-link" class="hidden">
-                                <a href="#users" class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    <span class="mr-2">👤</span>
-                                    <span>المستخدمين</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <div class="absolute bottom-0 w-64 border-t border-gray-200 dark:border-gray-700">
-                        <div class="p-4">
-                            <div class="flex items-center">
-                                <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">
-                                    <span id="user-initials">AM</span>
-                                </div>
-                                <div class="mr-3">
-                                    <h4 id="user-name" class="text-sm font-medium text-gray-700 dark:text-gray-200">اسم المستخدم</h4>
-                                    <p id="user-role" class="text-xs text-gray-500 dark:text-gray-400">الدور</p>
-                                </div>
-                            </div>
-                            <button id="logout-btn" class="mt-4 w-full bg-red-500 text-white py-2 px-4 rounded-md font-medium hover:bg-red-600 transition-all">
+</div>
+</form>
+</div>
+</div>
+<!-- صفحة لوحة التحكم (سيتم إظهارها بعد تسجيل الدخول) -->
+<div class="hidden" id="dashboard-page">
+<div class="flex h-screen bg-gray-100 dark:bg-dark-bg">
+<!-- القائمة الجانبية -->
+<div class="w-64 bg-white dark:bg-gray-800 shadow-lg" id="sidebar">
+<div class="p-4 border-b border-gray-200 dark:border-gray-700">
+<h2 class="text-xl font-bold text-primary">شركة الدهانات</h2>
+</div>
+<nav class="mt-4">
+<ul>
+<li>
+<a class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 active-nav" href="#dashboard">
+<span class="mr-2">📊</span>
+<span>لوحة التحكم</span>
+</a>
+</li>
+<li>
+<a class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" href="#products">
+<span class="mr-2">🎨</span>
+<span>المنتجات</span>
+</a>
+</li>
+<li>
+<a class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" href="#customers">
+<span class="mr-2">👥</span>
+<span>العملاء</span>
+</a>
+</li>
+<li>
+<a class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" href="#orders">
+<span class="mr-2">📝</span>
+<span>الطلبات</span>
+</a>
+</li>
+<li>
+<a class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" href="#payments">
+<span class="mr-2">💰</span>
+<span>السداد</span>
+</a>
+</li>
+<li>
+<a class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" href="#reports">
+<span class="mr-2">📈</span>
+<span>التقارير</span>
+</a>
+</li>
+<li class="hidden" id="admin-users-link">
+<a class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" href="#users">
+<span class="mr-2">👤</span>
+<span>المستخدمين</span>
+</a>
+</li>
+</ul>
+</nav>
+<div class="absolute bottom-0 w-64 border-t border-gray-200 dark:border-gray-700">
+<div class="p-4">
+<div class="flex items-center">
+<div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">
+<span id="user-initials">AM</span>
+</div>
+<div class="mr-3">
+<h4 class="text-sm font-medium text-gray-700 dark:text-gray-200" id="user-name">اسم المستخدم</h4>
+<p class="text-xs text-gray-500 dark:text-gray-400" id="user-role">الدور</p>
+</div>
+</div>
+<button class="mt-4 w-full bg-red-500 text-white py-2 px-4 rounded-md font-medium hover:bg-red-600 transition-all" id="logout-btn">
                                 تسجيل الخروج
                             </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- المحتوى الرئيسي -->
-                <div class="flex-1 overflow-y-auto">
-                    <header class="bg-white dark:bg-gray-800 shadow-sm">
-                        <div class="max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
-                            <h1 id="page-title" class="text-xl font-bold text-gray-900 dark:text-white">لوحة التحكم</h1>
-                        </div>
-                    </header>
-                    
-                    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                        <!-- محتوى صفحات التطبيق -->
-                        <div id="dashboard-content" class="page-content">
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                                    <h3 class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">إجمالي المبيعات</h3>
-                                    <p class="text-3xl font-bold text-primary">0</p>
-                                </div>
-                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                                    <h3 class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">عدد الطلبات</h3>
-                                    <p class="text-3xl font-bold text-primary">0</p>
-                                </div>
-                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                                    <h3 class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">عدد العملاء</h3>
-                                    <p class="text-3xl font-bold text-primary">0</p>
-                                </div>
-                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                                    <h3 class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">عدد المنتجات</h3>
-                                    <p class="text-3xl font-bold text-primary">0</p>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                                <h3 class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-4">المبيعات الشهرية</h3>
-                                <div class="h-64 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                                    <p class="text-gray-500 dark:text-gray-400">رسم بياني للمبيعات سيظهر هنا</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div id="products-content" class="page-content hidden">
-                            <div class="flex justify-between items-center mb-6">
-                                <h2 class="text-xl font-bold text-gray-800 dark:text-white">قائمة المنتجات</h2>
-                                <button id="add-product-btn" class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all">
+</div>
+</div>
+</div>
+<!-- المحتوى الرئيسي -->
+<div class="flex-1 overflow-y-auto">
+<header class="bg-white dark:bg-gray-800 shadow-sm">
+<div class="max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
+<h1 class="text-xl font-bold text-gray-900 dark:text-white" id="page-title">لوحة التحكم</h1>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+<!-- محتوى صفحات التطبيق -->
+<div class="page-content" id="dashboard-content">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+<h3 class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">إجمالي المبيعات</h3>
+<p class="text-3xl font-bold text-primary">0</p>
+</div>
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+<h3 class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">عدد الطلبات</h3>
+<p class="text-3xl font-bold text-primary">0</p>
+</div>
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+<h3 class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">عدد العملاء</h3>
+<p class="text-3xl font-bold text-primary">0</p>
+</div>
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+<h3 class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">عدد المنتجات</h3>
+<p class="text-3xl font-bold text-primary">0</p>
+</div>
+</div>
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+<h3 class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-4">المبيعات الشهرية</h3>
+<div class="h-64 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+<p class="text-gray-500 dark:text-gray-400">رسم بياني للمبيعات سيظهر هنا</p>
+</div>
+</div>
+</div>
+<div class="page-content hidden" id="products-content">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-xl font-bold text-gray-800 dark:text-white">قائمة المنتجات</h2>
+<button class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all" id="add-product-btn">
                                     إضافة منتج جديد
                                 </button>
-                            </div>
-                            
-                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-                                <div class="p-4">
-                                    <div class="flex flex-col md:flex-row gap-3">
-                                        <div class="flex-1">
-                                            <input type="text" id="product-search" placeholder="بحث عن منتج..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary">
-                                        </div>
-                                        <div>
-                                            <select id="product-category-filter" class="px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary">
-                                                <option value="">جميع التصنيفات</option>
-                                                <option value="إنشائي">إنشائي</option>
-                                                <option value="واجهات خارجية">واجهات خارجية</option>
-                                                <option value="ديكوري">ديكوري</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="overflow-x-auto">
-                                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                        <thead class="bg-gray-50 dark:bg-gray-700">
-                                            <tr>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">التصنيف</th>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">اسم المنتج</th>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">اللون/الباتش</th>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">السعر</th>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الإجراءات</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="products-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                            <tr>
-                                                <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">لا توجد منتجات بعد</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div id="customers-content" class="page-content hidden">
-                            <div class="flex justify-between items-center mb-6">
-                                <h2 class="text-xl font-bold text-gray-800 dark:text-white">قائمة العملاء</h2>
-                                <button id="add-customer-btn" class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all">
+</div>
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+<div class="p-4">
+<div class="flex flex-col md:flex-row gap-3">
+<div class="flex-1">
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="product-search" placeholder="بحث عن منتج..." type="text"/>
+</div>
+<div>
+<select class="px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="product-category-filter">
+<option value="">جميع التصنيفات</option>
+<option value="إنشائي">إنشائي</option>
+<option value="واجهات خارجية">واجهات خارجية</option>
+<option value="ديكوري">ديكوري</option>
+</select>
+</div>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+<thead class="bg-gray-50 dark:bg-gray-700">
+<tr>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">التصنيف</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">اسم المنتج</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">اللون/الباتش</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">السعر</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الإجراءات</th>
+</tr>
+</thead>
+<tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700" id="products-table-body">
+<tr>
+<td class="px-6 py-4 text-center text-gray-500 dark:text-gray-400" colspan="5">لا توجد منتجات بعد</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="page-content hidden" id="customers-content">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-xl font-bold text-gray-800 dark:text-white">قائمة العملاء</h2>
+<button class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all" id="add-customer-btn">
                                     إضافة عميل جديد
                                 </button>
-                            </div>
-                            
-                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-                                <div class="p-4">
-                                    <div class="flex flex-col md:flex-row gap-3">
-                                        <div class="flex-1">
-                                            <input type="text" id="customer-search" placeholder="بحث عن عميل..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary">
-                                        </div>
-                                        <div>
-                                            <select id="customer-type-filter" class="px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary">
-                                                <option value="">جميع التصنيفات</option>
-                                                <option value="هيئات/مشاريع">هيئات/مشاريع</option>
-                                                <option value="محلات">محلات</option>
-                                                <option value="أهالي">أهالي</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="overflow-x-auto">
-                                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                        <thead class="bg-gray-50 dark:bg-gray-700">
-                                            <tr>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الاسم</th>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">رقم الهاتف</th>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">العنوان</th>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">التصنيف</th>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">نسبة الخصم</th>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الإجراءات</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="customers-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                            <tr>
-                                                <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">لا يوجد عملاء بعد</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div id="orders-content" class="page-content hidden">
-                            <div class="flex justify-between items-center mb-6">
-                                <h2 class="text-xl font-bold text-gray-800 dark:text-white">قائمة الطلبات</h2>
-                                <button id="add-order-btn" class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all">
+</div>
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+<div class="p-4">
+<div class="flex flex-col md:flex-row gap-3">
+<div class="flex-1">
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="customer-search" placeholder="بحث عن عميل..." type="text"/>
+</div>
+<div>
+<select class="px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="customer-type-filter">
+<option value="">جميع التصنيفات</option>
+<option value="هيئات/مشاريع">هيئات/مشاريع</option>
+<option value="محلات">محلات</option>
+<option value="أهالي">أهالي</option>
+</select>
+</div>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+<thead class="bg-gray-50 dark:bg-gray-700">
+<tr>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الاسم</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">رقم الهاتف</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">العنوان</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">التصنيف</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">نسبة الخصم</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الإجراءات</th>
+</tr>
+</thead>
+<tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700" id="customers-table-body">
+<tr>
+<td class="px-6 py-4 text-center text-gray-500 dark:text-gray-400" colspan="6">لا يوجد عملاء بعد</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="page-content hidden" id="orders-content">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-xl font-bold text-gray-800 dark:text-white">قائمة الطلبات</h2>
+<button class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all" id="add-order-btn">
                                     إضافة طلب جديد
                                 </button>
-                            </div>
-                            
-                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-                                <div class="p-4">
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                        <div>
-                                            <input type="text" id="order-search" placeholder="بحث عن طلب..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary">
-                                        </div>
-                                        <div>
-                                            <input type="date" id="order-date-from" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary">
-                                        </div>
-                                        <div>
-                                            <input type="date" id="order-date-to" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary">
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="overflow-x-auto">
-                                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                        <thead class="bg-gray-50 dark:bg-gray-700">
-                                            <tr>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">رقم الطلب</th>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">التاريخ</th>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">العميل</th>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">المبلغ</th>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">طريقة الدفع</th>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الإجراءات</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="orders-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                            <tr>
-                                                <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">لا توجد طلبات بعد</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- محتويات الصفحات الأخرى -->
-                        <div id="payments-content" class="page-content hidden">
-<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 mt-4">
-    <thead class="bg-gray-50 dark:bg-gray-700">
-        <tr>
-            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300">العميل</th>
-            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300">التاريخ</th>
-            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300">المبلغ</th>
-            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300">طريقة الدفع</th>
-            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300">ملاحظات</th>
-        </tr>
-    </thead>
-    <tbody id="payments-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-        <tr>
-            <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">جاري التحميل...</td>
-        </tr>
-    </tbody>
+</div>
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+<div class="p-4">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+<div>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="order-search" placeholder="بحث عن طلب..." type="text"/>
+</div>
+<div>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="order-date-from" type="date"/>
+</div>
+<div>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="order-date-to" type="date"/>
+</div>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+<thead class="bg-gray-50 dark:bg-gray-700">
+<tr>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">رقم الطلب</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">التاريخ</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">العميل</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">المبلغ</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">طريقة الدفع</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الإجراءات</th>
+</tr>
+</thead>
+<tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700" id="orders-table-body">
+<tr>
+<td class="px-6 py-4 text-center text-gray-500 dark:text-gray-400" colspan="6">لا توجد طلبات بعد</td>
+</tr>
+</tbody>
 </table>
+</div>
+</div>
+</div>
+<!-- محتويات الصفحات الأخرى -->
+<div class="page-content hidden" id="payments-content">
 
-                            <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-6">سداد العملاء</h2>
-                            <!-- محتوى صفحة السداد -->
-                        </div>
-                        
-                        <div id="reports-content" class="page-content hidden">
-                            <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-6">التقارير</h2>
-                            <!-- محتوى صفحة التقارير -->
-                        </div>
-                        
-                        <div id="users-content" class="page-content hidden">
-                            <div class="flex justify-between items-center mb-6">
-                                <h2 class="text-xl font-bold text-gray-800 dark:text-white">إدارة المستخدمين</h2>
-                                <button id="add-user-btn" class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all">
+<div class="flex justify-end mb-4">
+<button class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all" id="add-payment-btn">
+            + إضافة سداد جديد
+        </button>
+</div>
+<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 mt-4">
+<thead class="bg-gray-50 dark:bg-gray-700">
+<tr>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300">العميل</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300">التاريخ</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300">المبلغ</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300">طريقة الدفع</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300">ملاحظات</th>
+</tr>
+</thead>
+<tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700" id="payments-table-body">
+<tr>
+<td class="px-6 py-4 text-center text-gray-500 dark:text-gray-400" colspan="5">جاري التحميل...</td>
+</tr>
+</tbody>
+</table>
+<h2 class="text-xl font-bold text-gray-800 dark:text-white mb-6">سداد العملاء</h2>
+<!-- محتوى صفحة السداد -->
+</div>
+<div class="page-content hidden" id="reports-content">
+<h2 class="text-xl font-bold text-gray-800 dark:text-white mb-6">التقارير</h2>
+<!-- محتوى صفحة التقارير -->
+</div>
+<div class="page-content hidden" id="users-content">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-xl font-bold text-gray-800 dark:text-white">إدارة المستخدمين</h2>
+<button class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all" id="add-user-btn">
                                     إضافة مستخدم جديد
                                 </button>
-                            </div>
-                            
-                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-                                <div class="overflow-x-auto">
-                                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                        <thead class="bg-gray-50 dark:bg-gray-700">
-                                            <tr>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الاسم</th>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">البريد الإلكتروني</th>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الدور</th>
-                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الإجراءات</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="users-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                            <tr>
-                                                <td colspan="4" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">لا يوجد مستخدمين آخرين بعد</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </main>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal إضافة منتج جديد -->
-    <div id="product-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-medium text-gray-900 dark:text-white" id="product-modal-title">إضافة منتج جديد</h3>
-                <button class="modal-close text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white">
-                    <span class="text-2xl">&times;</span>
-                </button>
-            </div>
-            
-            <form id="product-form" class="space-y-4">
-                <input type="hidden" id="product-id">
-                <div>
-                    <label for="product-category" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">التصنيف</label>
-                    <select id="product-category" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                        <option value="">اختر التصنيف</option>
-                        <option value="إنشائي">إنشائي</option>
-                        <option value="واجهات خارجية">واجهات خارجية</option>
-                        <option value="ديكوري">ديكوري</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label for="product-name" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">اسم المنتج</label>
-                    <input type="text" id="product-name" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                </div>
-                
-                <div>
-                    <label for="product-batch" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">اللون/الباتش</label>
-                    <input type="text" id="product-batch" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                </div>
-                
-                <div>
-                    <label for="product-price" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">السعر</label>
-                    <input type="number" id="product-price" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                </div>
-                
-                <div class="flex justify-end pt-4">
-                    <button type="button" class="modal-close bg-gray-200 text-gray-800 py-2 px-4 rounded-md font-medium hover:bg-gray-300 transition-all ml-2">
+</div>
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+<div class="overflow-x-auto">
+<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+<thead class="bg-gray-50 dark:bg-gray-700">
+<tr>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الاسم</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">البريد الإلكتروني</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الدور</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الإجراءات</th>
+</tr>
+</thead>
+<tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700" id="users-table-body">
+<tr>
+<td class="px-6 py-4 text-center text-gray-500 dark:text-gray-400" colspan="4">لا يوجد مستخدمين آخرين بعد</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal إضافة منتج جديد -->
+<div class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50" id="product-modal">
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-lg font-medium text-gray-900 dark:text-white" id="product-modal-title">إضافة منتج جديد</h3>
+<button class="modal-close text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white">
+<span class="text-2xl">×</span>
+</button>
+</div>
+<form class="space-y-4" id="product-form">
+<input id="product-id" type="hidden"/>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="product-category">التصنيف</label>
+<select class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="product-category" required="">
+<option value="">اختر التصنيف</option>
+<option value="إنشائي">إنشائي</option>
+<option value="واجهات خارجية">واجهات خارجية</option>
+<option value="ديكوري">ديكوري</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="product-name">اسم المنتج</label>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="product-name" required="" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="product-batch">اللون/الباتش</label>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="product-batch" required="" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="product-price">السعر</label>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="product-price" required="" type="number"/>
+</div>
+<div class="flex justify-end pt-4">
+<button class="modal-close bg-gray-200 text-gray-800 py-2 px-4 rounded-md font-medium hover:bg-gray-300 transition-all ml-2" type="button">
                         إلغاء
                     </button>
-                    <button type="submit" class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all">
+<button class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all" type="submit">
                         حفظ
                     </button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Modal إضافة عميل جديد -->
-    <div id="customer-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-medium text-gray-900 dark:text-white" id="customer-modal-title">إضافة عميل جديد</h3>
-                <button class="modal-close text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white">
-                    <span class="text-2xl">&times;</span>
-                </button>
-            </div>
-            
-            <form id="customer-form" class="space-y-4">
-                <input type="hidden" id="customer-id">
-                <div>
-                    <label for="customer-name" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">اسم العميل</label>
-                    <input type="text" id="customer-name" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                </div>
-                
-                <div>
-                    <label for="customer-phone" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">رقم الهاتف</label>
-                    <input type="text" id="customer-phone" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                </div>
-                
-                <div>
-                    <label for="customer-address" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">العنوان</label>
-                    <input type="text" id="customer-address" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                </div>
-                
-                <div>
-                    <label for="customer-type" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">تصنيف العميل</label>
-                    <select id="customer-type" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                        <option value="">اختر التصنيف</option>
-                        <option value="هيئات/مشاريع">هيئات/مشاريع</option>
-                        <option value="محلات">محلات</option>
-                        <option value="أهالي">أهالي</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label for="customer-discount" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">نسبة الخصم (%)</label>
-                    <input type="number" id="customer-discount" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" min="0" max="100" value="0">
-                </div>
-                
-                <div class="flex justify-end pt-4">
-                    <button type="button" class="modal-close bg-gray-200 text-gray-800 py-2 px-4 rounded-md font-medium hover:bg-gray-300 transition-all ml-2">
+</div>
+</form>
+</div>
+</div>
+<!-- Modal إضافة عميل جديد -->
+<div class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50" id="customer-modal">
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-lg font-medium text-gray-900 dark:text-white" id="customer-modal-title">إضافة عميل جديد</h3>
+<button class="modal-close text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white">
+<span class="text-2xl">×</span>
+</button>
+</div>
+<form class="space-y-4" id="customer-form">
+<input id="customer-id" type="hidden"/>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="customer-name">اسم العميل</label>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="customer-name" required="" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="customer-phone">رقم الهاتف</label>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="customer-phone" required="" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="customer-address">العنوان</label>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="customer-address" required="" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="customer-type">تصنيف العميل</label>
+<select class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="customer-type" required="">
+<option value="">اختر التصنيف</option>
+<option value="هيئات/مشاريع">هيئات/مشاريع</option>
+<option value="محلات">محلات</option>
+<option value="أهالي">أهالي</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="customer-discount">نسبة الخصم (%)</label>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="customer-discount" max="100" min="0" type="number" value="0"/>
+</div>
+<div class="flex justify-end pt-4">
+<button class="modal-close bg-gray-200 text-gray-800 py-2 px-4 rounded-md font-medium hover:bg-gray-300 transition-all ml-2" type="button">
                         إلغاء
                     </button>
-                    <button type="submit" class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all">
+<button class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all" type="submit">
                         حفظ
                     </button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Modal إضافة طلب جديد -->
-    <div id="order-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-4xl max-h-screen overflow-y-auto">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-medium text-gray-900 dark:text-white" id="order-modal-title">إضافة طلب جديد</h3>
-                <button class="modal-close text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white">
-                    <span class="text-2xl">&times;</span>
-                </button>
-            </div>
-            
-            <form id="order-form" class="space-y-4">
-                <input type="hidden" id="order-id">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="order-number" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">رقم الطلب</label>
-                        <input type="text" id="order-number" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" readonly>
-                    </div>
-                    
-                    <div>
-                        <label for="order-date" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">تاريخ الطلب</label>
-                        <input type="date" id="order-date" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                    </div>
-                    
-                    <div>
-                        <label for="order-customer" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">العميل</label>
-                        <select id="order-customer" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                            <option value="">اختر العميل</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label for="order-payment-method" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">طريقة الدفع</label>
-                        <select id="order-payment-method" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                            <option value="">اختر طريقة الدفع</option>
-                            <option value="نقدي">نقدي</option>
-                            <option value="تحويل بنكي">تحويل بنكي</option>
-                            <option value="شيك">شيك</option>
-                            <option value="فودافون كاش">فودافون كاش</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div>
-                    <div class="flex justify-between items-center">
-                        <h4 class="text-md font-medium text-gray-900 dark:text-white mb-2">المنتجات</h4>
-                        <button type="button" id="add-product-item" class="bg-primary text-white py-1 px-3 rounded-md font-medium hover:bg-opacity-90 transition-all text-sm">
+</div>
+</form>
+</div>
+</div>
+<!-- Modal إضافة طلب جديد -->
+<div class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50" id="order-modal">
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-4xl max-h-screen overflow-y-auto">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-lg font-medium text-gray-900 dark:text-white" id="order-modal-title">إضافة طلب جديد</h3>
+<button class="modal-close text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white">
+<span class="text-2xl">×</span>
+</button>
+</div>
+<form class="space-y-4" id="order-form">
+<input id="order-id" type="hidden"/>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="order-number">رقم الطلب</label>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="order-number" readonly="" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="order-date">تاريخ الطلب</label>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="order-date" required="" type="date"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="order-customer">العميل</label>
+<select class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="order-customer" required="">
+<option value="">اختر العميل</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="order-payment-method">طريقة الدفع</label>
+<select class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="order-payment-method" required="">
+<option value="">اختر طريقة الدفع</option>
+<option value="نقدي">نقدي</option>
+<option value="تحويل بنكي">تحويل بنكي</option>
+<option value="شيك">شيك</option>
+<option value="فودافون كاش">فودافون كاش</option>
+</select>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center">
+<h4 class="text-md font-medium text-gray-900 dark:text-white mb-2">المنتجات</h4>
+<button class="bg-primary text-white py-1 px-3 rounded-md font-medium hover:bg-opacity-90 transition-all text-sm" id="add-product-item" type="button">
                             إضافة منتج
                         </button>
-                    </div>
-                    
-                    <div id="order-products">
-                        <div class="order-product-item bg-gray-50 dark:bg-gray-700 p-3 rounded-md mb-2">
-                            <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
-                                <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">المنتج</label>
-                                    <select class="order-product-select w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                                        <option value="">اختر المنتج</option>
-                                    </select>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">الكمية</label>
-                                    <input type="number" class="order-product-quantity w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" value="1" min="1" required>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">السعر</label>
-                                    <input type="number" class="order-product-price w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" readonly>
-                                </div>
-                                
-                                <div class="flex items-end">
-                                    <button type="button" class="remove-product-item bg-red-500 text-white py-2 px-3 rounded-md font-medium hover:bg-red-600 transition-all">
+</div>
+<div id="order-products">
+<div class="order-product-item bg-gray-50 dark:bg-gray-700 p-3 rounded-md mb-2">
+<div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+<div class="md:col-span-2">
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">المنتج</label>
+<select class="order-product-select w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required="">
+<option value="">اختر المنتج</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">الكمية</label>
+<input class="order-product-quantity w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" min="1" required="" type="number" value="1"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">السعر</label>
+<input class="order-product-price w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" readonly="" type="number"/>
+</div>
+<div class="flex items-end">
+<button class="remove-product-item bg-red-500 text-white py-2 px-3 rounded-md font-medium hover:bg-red-600 transition-all" type="button">
                                         حذف
                                     </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div>
-                    <label for="order-notes" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">ملاحظات</label>
-                    <textarea id="order-notes" rows="3" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
-                </div>
-                
-                <div class="flex items-center">
-                    <input type="checkbox" id="has-deposit" class="w-4 h-4 text-primary">
-                    <label for="has-deposit" class="mr-2 block text-sm font-medium text-gray-700 dark:text-gray-200">عربون</label>
-                </div>
-                
-                <div id="deposit-section" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="deposit-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">قيمة العربون</label>
-                        <input type="number" id="deposit-amount" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" min="0">
-                    </div>
-                    
-                    <div>
-                        <label for="deposit-method" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">طريقة دفع العربون</label>
-                        <select id="deposit-method" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary">
-                            <option value="نقدي">نقدي</option>
-                            <option value="تحويل بنكي">تحويل بنكي</option>
-                            <option value="شيك">شيك</option>
-                            <option value="فودافون كاش">فودافون كاش</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-md">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">المبلغ قبل الخصم</label>
-                        <div id="order-subtotal" class="text-xl font-bold text-primary">0.00 ج.م</div>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">الخصم</label>
-                        <div id="order-discount" class="text-xl font-bold text-gray-600 dark:text-gray-300">0.00 ج.م</div>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">المبلغ بعد الخصم</label>
-                        <div id="order-total" class="text-xl font-bold text-primary">0.00 ج.م</div>
-                    </div>
-                </div>
-                
-                <div class="flex justify-end pt-4">
-                    <button type="button" class="modal-close bg-gray-200 text-gray-800 py-2 px-4 rounded-md font-medium hover:bg-gray-300 transition-all ml-2">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="order-notes">ملاحظات</label>
+<textarea class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="order-notes" rows="3"></textarea>
+</div>
+<div class="flex items-center">
+<input class="w-4 h-4 text-primary" id="has-deposit" type="checkbox"/>
+<label class="mr-2 block text-sm font-medium text-gray-700 dark:text-gray-200" for="has-deposit">عربون</label>
+</div>
+<div class="hidden grid grid-cols-1 md:grid-cols-2 gap-4" id="deposit-section">
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="deposit-amount">قيمة العربون</label>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="deposit-amount" min="0" type="number"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="deposit-method">طريقة دفع العربون</label>
+<select class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="deposit-method">
+<option value="نقدي">نقدي</option>
+<option value="تحويل بنكي">تحويل بنكي</option>
+<option value="شيك">شيك</option>
+<option value="فودافون كاش">فودافون كاش</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-md">
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">المبلغ قبل الخصم</label>
+<div class="text-xl font-bold text-primary" id="order-subtotal">0.00 ج.م</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">الخصم</label>
+<div class="text-xl font-bold text-gray-600 dark:text-gray-300" id="order-discount">0.00 ج.م</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">المبلغ بعد الخصم</label>
+<div class="text-xl font-bold text-primary" id="order-total">0.00 ج.م</div>
+</div>
+</div>
+<div class="flex justify-end pt-4">
+<button class="modal-close bg-gray-200 text-gray-800 py-2 px-4 rounded-md font-medium hover:bg-gray-300 transition-all ml-2" type="button">
                         إلغاء
                     </button>
-                    <button type="submit" class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all">
+<button class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all" type="submit">
                         حفظ
                     </button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Modal إضافة مستخدم جديد -->
-    <div id="user-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-medium text-gray-900 dark:text-white" id="user-modal-title">إضافة مستخدم جديد</h3>
-                <button class="modal-close text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white">
-                    <span class="text-2xl">&times;</span>
-                </button>
-            </div>
-            
-            <form id="user-form" class="space-y-4">
-                <div>
-                    <label for="user-display-name" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">اسم المستخدم</label>
-                    <input type="text" id="user-display-name" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                </div>
-                
-                <div>
-                    <label for="user-email" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">البريد الإلكتروني</label>
-                    <input type="email" id="user-email" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                </div>
-                
-                <div>
-                    <label for="user-password" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">كلمة المرور</label>
-                    <input type="password" id="user-password" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                </div>
-                
-                <div>
-                    <label for="user-role" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">الدور</label>
-                    <select id="user-role" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" required>
-                        <option value="supervisor">مشرف (Supervisor)</option>
-                        <option value="user">مستخدم عادي (User)</option>
-                    </select>
-                </div>
-                
-                <div class="flex justify-end pt-4">
-                    <button type="button" class="modal-close bg-gray-200 text-gray-800 py-2 px-4 rounded-md font-medium hover:bg-gray-300 transition-all ml-2">
+</div>
+</form>
+</div>
+</div>
+<!-- Modal إضافة مستخدم جديد -->
+<div class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50" id="user-modal">
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-lg font-medium text-gray-900 dark:text-white" id="user-modal-title">إضافة مستخدم جديد</h3>
+<button class="modal-close text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white">
+<span class="text-2xl">×</span>
+</button>
+</div>
+<form class="space-y-4" id="user-form">
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="user-display-name">اسم المستخدم</label>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="user-display-name" required="" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="user-email">البريد الإلكتروني</label>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="user-email" required="" type="email"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="user-password">كلمة المرور</label>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="user-password" required="" type="password"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="user-role">الدور</label>
+<select class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-primary" id="user-role" required="">
+<option value="supervisor">مشرف (Supervisor)</option>
+<option value="user">مستخدم عادي (User)</option>
+</select>
+</div>
+<div class="flex justify-end pt-4">
+<button class="modal-close bg-gray-200 text-gray-800 py-2 px-4 rounded-md font-medium hover:bg-gray-300 transition-all ml-2" type="button">
                         إلغاء
                     </button>
-                    <button type="submit" class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all">
+<button class="bg-primary text-white py-2 px-4 rounded-md font-medium hover:bg-opacity-90 transition-all" type="submit">
                         حفظ
                     </button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- تطبيق Firebase -->
-    <script>
+</div>
+</form>
+</div>
+</div>
+<!-- تطبيق Firebase -->
+<script>
         // تهيئة Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyCpTjPsfaWTuNjpUupteqALjmb0qLUAzg8",
@@ -2410,9 +2358,53 @@
             return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
         }
     </script>
+
+<!-- Modal إضافة سداد جديد -->
+<div class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50" id="payment-modal">
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-lg font-medium text-gray-900 dark:text-white">إضافة سداد جديد</h3>
+<button class="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white" onclick="document.getElementById('payment-modal').classList.add('hidden')">
+<span class="text-2xl">×</span>
+</button>
+</div>
+<form class="space-y-4" id="payment-form">
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="payment-customer">اسم العميل</label>
+<select class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base" id="payment-customer" required="">
+<option value="">اختر العميل</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="payment-amount">قيمة المبلغ</label>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base" id="payment-amount" required="" type="number"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="payment-method">طريقة السداد</label>
+<select class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base" id="payment-method" required="">
+<option value="نقدي">نقدي</option>
+<option value="تحويل بنكي">تحويل بنكي</option>
+<option value="شيك">شيك</option>
+<option value="فودافون كاش">فودافون كاش</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="payment-notes">ملاحظات</label>
+<textarea class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base" id="payment-notes" rows="3"></textarea>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1" for="payment-date">تاريخ السداد</label>
+<input class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md text-base" id="payment-date" required="" type="date"/>
+</div>
+<div class="flex justify-end pt-4">
+<button class="bg-gray-200 text-gray-800 py-2 px-4 rounded-md ml-2" onclick="document.getElementById('payment-modal').classList.add('hidden')" type="button">إلغاء</button>
+<button class="bg-primary text-white py-2 px-4 rounded-md" type="submit">حفظ</button>
+</div>
+</form>
+</div>
+</div>
 </body>
 </html>
-
 <script>
 // =====================
 // إدارة البيانات - السداد
