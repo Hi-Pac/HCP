@@ -331,6 +331,23 @@
                         
                         <!-- محتويات الصفحات الأخرى -->
                         <div id="payments-content" class="page-content hidden">
+<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 mt-4">
+    <thead class="bg-gray-50 dark:bg-gray-700">
+        <tr>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300">العميل</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300">التاريخ</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300">المبلغ</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300">طريقة الدفع</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300">ملاحظات</th>
+        </tr>
+    </thead>
+    <tbody id="payments-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <tr>
+            <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">جاري التحميل...</td>
+        </tr>
+    </tbody>
+</table>
+
                             <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-6">سداد العملاء</h2>
                             <!-- محتوى صفحة السداد -->
                         </div>
@@ -2395,3 +2412,52 @@
     </script>
 </body>
 </html>
+
+<script>
+// =====================
+// إدارة البيانات - السداد
+// =====================
+function loadPayments() {
+    db.collection('payments').orderBy('date', 'desc').get().then((querySnapshot) => {
+        const payments = [];
+        querySnapshot.forEach((doc) => {
+            payments.push({ id: doc.id, ...doc.data() });
+        });
+
+        renderPaymentsTable(payments);
+    }).catch((error) => {
+        console.error('خطأ في جلب بيانات السداد:', error);
+    });
+}
+
+function renderPaymentsTable(payments) {
+    const tableBody = document.getElementById('payments-table-body');
+    if (!tableBody) return;
+
+    if (payments.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">لا توجد بيانات سداد بعد</td></tr>`;
+        return;
+    }
+
+    let html = '';
+    payments.forEach(payment => {
+        const date = new Date(payment.date?.seconds * 1000).toLocaleDateString('ar-EG');
+        html += `
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">${payment.customerName}</td>
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">${date}</td>
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">${payment.amount} ج.م</td>
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">${payment.method}</td>
+                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">${payment.notes || ''}</td>
+            </tr>
+        `;
+    });
+
+    tableBody.innerHTML = html;
+}
+
+// استدعاء التحميل عند الدخول على صفحة السداد
+document.querySelector('a[href="#payments"]').addEventListener('click', () => {
+    loadPayments();
+});
+</script>
