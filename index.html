@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دلتا للدهانات - نظام إدارة</title>
+    <title>الحرمين للدهانات</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
@@ -1905,6 +1905,78 @@
         document.addEventListener('DOMContentLoaded', () => {
             initializeDynamicEventHandlers();
         });
+
+        // 1) عندما تُرسَل استمارة إضافة منتج
+document.getElementById('product-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  // اجمعي القيم من الحقول
+  const category = document.getElementById('product-category').value;
+  const name     = document.getElementById('product-name').value.trim();
+  const batch    = document.getElementById('product-batch').value.trim();
+  const price    = parseFloat(document.getElementById('product-price').value);
+  
+  try {
+    // أضيفي إلى مجموعة products
+    await db.collection('products').add({
+      category,
+      name,
+      batch,
+      price,
+      userId: auth.currentUser.uid,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    
+    // تأكيد للمستخدم وإغلاق النافذة
+    Swal.fire('تم', 'تمّ إضافة المنتج بنجاح', 'success');
+    document.getElementById('product-modal').classList.add('hidden');
+    
+    // أعد تحميل لائحة المنتجات
+    loadProducts();
+    
+  } catch (err) {
+    console.error(err);
+    Swal.fire('خطأ', err.message, 'error');
+  }
+});
+
+// 2) دالة لجلب وعرض المنتجات في الجدول
+async function loadProducts() {
+  const snapshot = await db.collection('products')
+                           .orderBy('createdAt', 'desc')
+                           .get();
+  const tbody = document.getElementById('products-table-body');
+  tbody.innerHTML = ''; // مسح القديم
+  
+  if (snapshot.empty) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" class="px-6 py-4 text-center text-gray-500">لا توجد منتجات</td>
+      </tr>`;
+  } else {
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="px-6 py-4">${data.name}</td>
+        <td class="px-6 py-4">${data.category}</td>
+        <td class="px-6 py-4">${data.batch}</td>
+        <td class="px-6 py-4">${data.price.toFixed(2)}</td>
+        <td class="px-6 py-4 flex gap-2">
+          <button onclick="editProduct('${doc.id}')" class="text-blue-500">تعديل</button>
+          <button onclick="deleteProduct('${doc.id}')" class="text-red-500">حذف</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  }
+}
+
+// 3) نداء لجلب المنتجات عند عرض صفحة المنتجات
+const originalShowPage = showPage;
+showPage = (pageId) => {
+  originalShowPage(pageId);
+  if (pageId === 'products') loadProducts();
+};
+
     </script>
 </body>
 </html>
