@@ -1901,10 +1901,7 @@
             }
         }
 
-        // Call this after DOM is fully loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeDynamicEventHandlers();
-        });
+       
 
         // 1) عندما تُرسَل استمارة إضافة منتج
 document.getElementById('product-form').addEventListener('submit', async (e) => {
@@ -1977,6 +1974,10 @@ showPage = (pageId) => {
   if (pageId === 'products') loadProducts();
 };
 
+         // Call this after DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeDynamicEventHandlers();
+        });
     </script>
 </body>
 </html>
